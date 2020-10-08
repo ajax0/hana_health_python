@@ -1,0 +1,291 @@
+SELECT
+
+/* 
+
+[NAME]
+
+- HANA_ABAP_BatchJobs
+
+[DESCRIPTION]
+
+- Overview of ABAP short dumps
+
+[SOURCE]
+
+- SAP Note 1969700
+
+[DETAILS AND RESTRICTIONS]
+
+- Table SNAP only available in SAP ABAP environments
+- You have to be connected to the SAP<sid> schema otherwise the following error is issued:
+
+  [259]: invalid table name: Could not find table/view SNAP in schema
+
+- If access to ABAP objects is possible but you cannot log on as ABAP user, you can switch the default schema before executing the command:
+
+  SET SCHEMA SAP<sid>
+
+[VALID FOR]
+
+- Revisions:              all
+- Statistics server type: all
+- Client application:     ABAP
+
+[SQL COMMAND VERSION]
+
+- 2019/03/15:  1.0 (initial version)
+
+[INVOLVED TABLES]
+
+- SNAP
+
+[INPUT PARAMETERS]
+
+- BEGIN_TIME
+
+  Begin time
+
+  '2018/12/05 14:05:00' --> Set begin time to 5th of December 2018, 14:05
+  'C'                   --> Set begin time to current time
+  'C-S900'              --> Set begin time to current time minus 900 seconds
+  'C-M15'               --> Set begin time to current time minus 15 minutes
+  'C-H5'                --> Set begin time to current time minus 5 hours
+  'C-D1'                --> Set begin time to current time minus 1 day
+  'C-W4'                --> Set begin time to current time minus 4 weeks
+  'E-S900'              --> Set begin time to end time minus 900 seconds
+  'E-M15'               --> Set begin time to end time minus 15 minutes
+  'E-H5'                --> Set begin time to end time minus 5 hours
+  'E-D1'                --> Set begin time to end time minus 1 day
+  'E-W4'                --> Set begin time to end time minus 4 weeks
+  'MIN'                 --> Set begin time to minimum (1000/01/01 00:00:00)
+
+- END_TIME
+
+  End time
+
+  '2018/12/08 14:05:00' --> Set end time to 8th of December 2018, 14:05
+  'C'                   --> Set end time to current time
+  'C-S900'              --> Set end time to current time minus 900 seconds
+  'C-M15'               --> Set end time to current time minus 15 minutes
+  'C-H5'                --> Set end time to current time minus 5 hours
+  'C-D1'                --> Set end time to current time minus 1 day
+  'C-W4'                --> Set end time to current time minus 4 weeks
+  'B+S900'              --> Set end time to begin time plus 900 seconds
+  'B+M15'               --> Set end time to begin time plus 15 minutes
+  'B+H5'                --> Set end time to begin time plus 5 hours
+  'B+D1'                --> Set end time to begin time plus 1 day
+  'B+W4'                --> Set end time to begin time plus 4 weeks
+  'MAX'                 --> Set end time to maximum (9999/12/31 23:59:59)
+
+- SHORT_DUMP_TYPE
+
+  Type of short dump
+
+  'DBIF_DSQL2_SQL_ERROR' --> Display short dumps of type DBIF_DSQL2_SQL_ERROR
+  'DB%'                  --> Display short dumps starting with 'DB'
+  '%'                    --> No restriction related to short dump type
+
+- MANDT
+
+  ABAP client
+
+  '100'           --> ABAP client 100
+  '%'             --> No restriction to ABAP client
+
+- APP_USER
+
+  ABAP user name
+
+  'ALERFC'        --> ABAP user ALERFC
+  '%'             --> No restriction related to ABAP user name
+
+- APP_SOURCE
+
+  ABAP source
+
+  'SAPLM61X'      --> ABAP source SAPLM61X
+  '%'             --> No restriction related to ABAP source
+
+- AGGREGATE_BY
+
+  Aggregation criteria (possible values can be found in comment)
+
+  'TIME'          --> Aggregation by time
+  'HOST, PORT'    --> Aggregation by host and port
+  'NONE'          --> No aggregation
+
+- TIME_AGGREGATE_BY
+
+  Aggregation criteria (possible values can be found in comment)
+
+  'HOUR'          --> Aggregation by hour
+  'YYYY/WW'       --> Aggregation by calendar week
+  'TS<seconds>'   --> Time slice aggregation based on <seconds> seconds
+  'NONE'          --> No aggregation
+
+- ORDER_BY
+
+  Sort criteria (available values are provided in comment)
+
+  'SIZE'          --> Sorting by size 
+  'TABLE'         --> Sorting by table name
+  
+[OUTPUT PARAMETERS]
+
+- START_TIME: Start time of considered time interval
+- JOB_NAME:   Batch job name
+- USER_NAME:  Scheduling user name
+- STATUS:     Batch job status
+- WP_PID:     Process ID of work process
+- NUM_JOBS:   Number of batch jobs
+- TOT_DUR_S:  Total duration (s)
+- AVG_DUR_S:  Average duration (s)
+
+[EXAMPLE OUTPUT]
+
+---------------------------------------------------------------------------------------------------------------------------
+|START_TIME         |SHORT_DUMP_TYPE          |MANDT|CLIENT_HOST       |APP_USER   |APP_SOURCE                      |COUNT|
+---------------------------------------------------------------------------------------------------------------------------
+|2019/03/15 07:54:59|SYSTEM_SHM_AREA_OBSOLETE |  100|sap-hanaa01_C11_00|HINZ       |CL_ABAP_SOFT_REFERENCE========CP|    1|
+|2019/03/15 07:43:02|DBSQL_DUPLICATE_KEY_ERROR|  100|sap-hanaa04_C11_04|KUNZ       |/SDF/SAPLSMON                   |    1|
+|2019/03/15 01:30:49|AMDP_EXECUTION_FAILED    |  100|sap-hanaa04_C11_04|FRAUENDORFE|CL_FSH_V16_NETTING_SRL========CP|    1|
+|2019/03/14 17:07:07|DBSQL_DUPLICATE_KEY_ERROR|  100|sap-hanaa01_C11_00|MAIER      |SAPLEINU                        |    1|
+|2019/03/14 14:36:01|DBIF_RTAB_SQL_ERROR      |  100|sap-hanaa19_C11_19|MUELLER    |/SDF/SAPLMON_6X                 |    1|
+|2019/03/14 14:29:41|DBSQL_SQL_ERROR          |  100|sap-hanaa01_C11_00|SCHULZE    |FPP_READ_PLND_DEL_TIME=======CP |    1|
+|2019/03/14 10:46:49|SYNTAX_ERROR             |  100|sap-hanaa02_C11_02|MEYER      |CL_IDFIVAT_APP_SERVICE========CP|    1|
+|2019/03/14 02:03:59|DBSQL_SQL_ERROR          |  100|sap-hanaa01_C11_00|PARK       |SAPLCURA                        |    1|
+|2019/03/14 01:38:19|DBIF_DSQL2_SQL_ERROR     |  100|sap-hanaa19_C11_19|NABI       |CL_FSH_V16_SRL================CP|    1|
+|2019/03/14 01:36:31|DBSQL_SQL_ERROR          |  100|sap-hanaa02_C11_02|HOFMANN    |SAPLDISP                        |    1|
+---------------------------------------------------------------------------------------------------------------------------
+
+*/
+
+  START_TIME,
+  SHORT_DUMP_TYPE,
+  LPAD(MANDT, 5) MANDT,
+  CLIENT_HOST,
+  APP_USER,
+  APP_SOURCE,
+  LPAD(DUMPS, 5) COUNT
+FROM
+( SELECT
+    CASE 
+      WHEN BI.AGGREGATE_BY = 'NONE' OR INSTR(BI.AGGREGATE_BY, 'TIME') != 0 THEN 
+        CASE 
+          WHEN BI.TIME_AGGREGATE_BY LIKE 'TS%' THEN
+            TO_VARCHAR(ADD_SECONDS(TO_TIMESTAMP('2014/01/01 00:00:00', 'YYYY/MM/DD HH24:MI:SS'), FLOOR(SECONDS_BETWEEN(TO_TIMESTAMP('2014/01/01 00:00:00', 
+            'YYYY/MM/DD HH24:MI:SS'), S.DUMP_TIME) / SUBSTR(BI.TIME_AGGREGATE_BY, 3)) * SUBSTR(BI.TIME_AGGREGATE_BY, 3)), 'YYYY/MM/DD HH24:MI:SS')
+          ELSE TO_VARCHAR(S.DUMP_TIME, BI.TIME_AGGREGATE_BY)
+        END
+      ELSE 'any' 
+    END START_TIME,
+    CASE WHEN BI.AGGREGATE_BY = 'NONE' OR INSTR(BI.AGGREGATE_BY, 'TYPE')       != 0 THEN S.SHORT_DUMP_TYPE ELSE MAP(BI.SHORT_DUMP_TYPE, '%', 'any', BI.SHORT_DUMP_TYPE) END SHORT_DUMP_TYPE,
+    CASE WHEN BI.AGGREGATE_BY = 'NONE' OR INSTR(BI.AGGREGATE_BY, 'MANDT')      != 0 THEN S.MANDT           ELSE MAP(BI.MANDT,           '%', 'any', BI.MANDT)           END MANDT,
+    CASE WHEN BI.AGGREGATE_BY = 'NONE' OR INSTR(BI.AGGREGATE_BY, 'HOST')       != 0 THEN S.CLIENT_HOST     ELSE MAP(BI.CLIENT_HOST,     '%', 'any', BI.CLIENT_HOST)     END CLIENT_HOST,
+    CASE WHEN BI.AGGREGATE_BY = 'NONE' OR INSTR(BI.AGGREGATE_BY, 'APP_USER')   != 0 THEN S.APP_USER        ELSE MAP(BI.APP_USER,        '%', 'any', BI.APP_USER)        END APP_USER,
+    CASE WHEN BI.AGGREGATE_BY = 'NONE' OR INSTR(BI.AGGREGATE_BY, 'APP_SOURCE') != 0 THEN S.APP_SOURCE      ELSE MAP(BI.APP_SOURCE,      '%', 'any', BI.APP_SOURCE)      END APP_SOURCE,
+    COUNT(*) DUMPS,
+    BI.ORDER_BY
+  FROM
+  ( SELECT
+      CASE
+        WHEN BEGIN_TIME =    'C'                             THEN CURRENT_TIMESTAMP
+        WHEN BEGIN_TIME LIKE 'C-S%'                          THEN ADD_SECONDS(CURRENT_TIMESTAMP, -SUBSTR_AFTER(BEGIN_TIME, 'C-S'))
+        WHEN BEGIN_TIME LIKE 'C-M%'                          THEN ADD_SECONDS(CURRENT_TIMESTAMP, -SUBSTR_AFTER(BEGIN_TIME, 'C-M') * 60)
+        WHEN BEGIN_TIME LIKE 'C-H%'                          THEN ADD_SECONDS(CURRENT_TIMESTAMP, -SUBSTR_AFTER(BEGIN_TIME, 'C-H') * 3600)
+        WHEN BEGIN_TIME LIKE 'C-D%'                          THEN ADD_SECONDS(CURRENT_TIMESTAMP, -SUBSTR_AFTER(BEGIN_TIME, 'C-D') * 86400)
+        WHEN BEGIN_TIME LIKE 'C-W%'                          THEN ADD_SECONDS(CURRENT_TIMESTAMP, -SUBSTR_AFTER(BEGIN_TIME, 'C-W') * 86400 * 7)
+        WHEN BEGIN_TIME LIKE 'E-S%'                          THEN ADD_SECONDS(TO_TIMESTAMP(END_TIME, 'YYYY/MM/DD HH24:MI:SS'), -SUBSTR_AFTER(BEGIN_TIME, 'E-S'))
+        WHEN BEGIN_TIME LIKE 'E-M%'                          THEN ADD_SECONDS(TO_TIMESTAMP(END_TIME, 'YYYY/MM/DD HH24:MI:SS'), -SUBSTR_AFTER(BEGIN_TIME, 'E-M') * 60)
+        WHEN BEGIN_TIME LIKE 'E-H%'                          THEN ADD_SECONDS(TO_TIMESTAMP(END_TIME, 'YYYY/MM/DD HH24:MI:SS'), -SUBSTR_AFTER(BEGIN_TIME, 'E-H') * 3600)
+        WHEN BEGIN_TIME LIKE 'E-D%'                          THEN ADD_SECONDS(TO_TIMESTAMP(END_TIME, 'YYYY/MM/DD HH24:MI:SS'), -SUBSTR_AFTER(BEGIN_TIME, 'E-D') * 86400)
+        WHEN BEGIN_TIME LIKE 'E-W%'                          THEN ADD_SECONDS(TO_TIMESTAMP(END_TIME, 'YYYY/MM/DD HH24:MI:SS'), -SUBSTR_AFTER(BEGIN_TIME, 'E-W') * 86400 * 7)
+        WHEN BEGIN_TIME =    'MIN'                           THEN TO_TIMESTAMP('1000/01/01 00:00:00', 'YYYY/MM/DD HH24:MI:SS')
+        WHEN SUBSTR(BEGIN_TIME, 1, 1) NOT IN ('C', 'E', 'M') THEN TO_TIMESTAMP(BEGIN_TIME, 'YYYY/MM/DD HH24:MI:SS')
+      END BEGIN_TIME,
+      CASE
+        WHEN END_TIME =    'C'                             THEN CURRENT_TIMESTAMP
+        WHEN END_TIME LIKE 'C-S%'                          THEN ADD_SECONDS(CURRENT_TIMESTAMP, -SUBSTR_AFTER(END_TIME, 'C-S'))
+        WHEN END_TIME LIKE 'C-M%'                          THEN ADD_SECONDS(CURRENT_TIMESTAMP, -SUBSTR_AFTER(END_TIME, 'C-M') * 60)
+        WHEN END_TIME LIKE 'C-H%'                          THEN ADD_SECONDS(CURRENT_TIMESTAMP, -SUBSTR_AFTER(END_TIME, 'C-H') * 3600)
+        WHEN END_TIME LIKE 'C-D%'                          THEN ADD_SECONDS(CURRENT_TIMESTAMP, -SUBSTR_AFTER(END_TIME, 'C-D') * 86400)
+        WHEN END_TIME LIKE 'C-W%'                          THEN ADD_SECONDS(CURRENT_TIMESTAMP, -SUBSTR_AFTER(END_TIME, 'C-W') * 86400 * 7)
+        WHEN END_TIME LIKE 'B+S%'                          THEN ADD_SECONDS(TO_TIMESTAMP(BEGIN_TIME, 'YYYY/MM/DD HH24:MI:SS'), SUBSTR_AFTER(END_TIME, 'B+S'))
+        WHEN END_TIME LIKE 'B+M%'                          THEN ADD_SECONDS(TO_TIMESTAMP(BEGIN_TIME, 'YYYY/MM/DD HH24:MI:SS'), SUBSTR_AFTER(END_TIME, 'B+M') * 60)
+        WHEN END_TIME LIKE 'B+H%'                          THEN ADD_SECONDS(TO_TIMESTAMP(BEGIN_TIME, 'YYYY/MM/DD HH24:MI:SS'), SUBSTR_AFTER(END_TIME, 'B+H') * 3600)
+        WHEN END_TIME LIKE 'B+D%'                          THEN ADD_SECONDS(TO_TIMESTAMP(BEGIN_TIME, 'YYYY/MM/DD HH24:MI:SS'), SUBSTR_AFTER(END_TIME, 'B+D') * 86400)
+        WHEN END_TIME LIKE 'B+W%'                          THEN ADD_SECONDS(TO_TIMESTAMP(BEGIN_TIME, 'YYYY/MM/DD HH24:MI:SS'), SUBSTR_AFTER(END_TIME, 'B+W') * 86400 * 7)
+        WHEN END_TIME =    'MAX'                           THEN TO_TIMESTAMP('9999/12/31 00:00:00', 'YYYY/MM/DD HH24:MI:SS')
+        WHEN SUBSTR(END_TIME, 1, 1) NOT IN ('C', 'B', 'M') THEN TO_TIMESTAMP(END_TIME, 'YYYY/MM/DD HH24:MI:SS')
+      END END_TIME,
+      SHORT_DUMP_TYPE,
+      MANDT,
+      CLIENT_HOST,
+      APP_USER,
+      APP_SOURCE,
+      AGGREGATE_BY
+      AGGREGATE_BY,
+      MAP(TIME_AGGREGATE_BY,
+        'NONE',        'YYYY/MM/DD HH24:MI:SS',
+        'HOUR',        'YYYY/MM/DD HH24',
+        'DAY',         'YYYY/MM/DD (DY)',
+        'HOUR_OF_DAY', 'HH24',
+        TIME_AGGREGATE_BY ) TIME_AGGREGATE_BY,
+        ORDER_BY
+    FROM
+    ( SELECT                    /* Modification section */
+        '1000/10/18 07:58:00' BEGIN_TIME,                  /* YYYY/MM/DD HH24:MI:SS timestamp, C, C-S<seconds>, C-M<minutes>, C-H<hours>, C-D<days>, C-W<weeks>, E-S<seconds>, E-M<minutes>, E-H<hours>, E-D<days>, E-W<weeks>, MIN */
+        '9999/10/18 08:05:00' END_TIME,                    /* YYYY/MM/DD HH24:MI:SS timestamp, C, C-S<seconds>, C-M<minutes>, C-H<hours>, C-D<days>, C-W<weeks>, B+S<seconds>, B+M<minutes>, B+H<hours>, B+D<days>, B+W<weeks>, MAX */
+        '%' SHORT_DUMP_TYPE,
+        '%' MANDT,
+        '%' CLIENT_HOST,
+        '%' APP_USER,
+        '%' APP_SOURCE,
+        'NONE' AGGREGATE_BY,                 /* TIME, TYPE, MANDT, HOST, APP_USER, APP_SOURCE or comma separated combinations, NONE for no aggregation */
+        'NONE' TIME_AGGREGATE_BY,            /* HOUR, DAY, HOUR_OF_DAY or database time pattern, TS<seconds> for time slice, NONE for no aggregation */
+        'TIME' ORDER_BY                  /* TIME, COUNT, TYPE, MANDT, HOST, APP_USER, APP_SOURCE */
+      FROM
+        DUMMY
+    )
+  ) BI,
+  ( SELECT
+      TO_TIMESTAMP(DATUM || UZEIT, 'YYYYMMDDHH24MISS') DUMP_TIME,
+      SUBSTR(FLIST, 6, LOCATE(FLIST, 'AP0') - 6) SHORT_DUMP_TYPE,
+      MANDT,
+      AHOST CLIENT_HOST,
+      UNAME APP_USER,
+      SUBSTR(FLIST, LOCATE(FLIST, 'AP0') + 5, LOCATE(FLIST, 'AI0') - LOCATE(FLIST, 'AP0') - 5) APP_SOURCE
+    FROM
+      SAPBWH.SNAP
+    WHERE
+      SEQNO = '000'
+  ) S
+  WHERE
+    S.DUMP_TIME BETWEEN BI.BEGIN_TIME AND BI.END_TIME AND
+    S.SHORT_DUMP_TYPE LIKE BI.SHORT_DUMP_TYPE AND
+    S.MANDT LIKE BI.MANDT AND
+    S.CLIENT_HOST LIKE BI.CLIENT_HOST AND
+    S.APP_USER LIKE BI.APP_USER AND
+    S.APP_SOURCE LIKE BI.APP_SOURCE
+  GROUP BY
+    CASE 
+      WHEN BI.AGGREGATE_BY = 'NONE' OR INSTR(BI.AGGREGATE_BY, 'TIME') != 0 THEN 
+        CASE 
+          WHEN BI.TIME_AGGREGATE_BY LIKE 'TS%' THEN
+            TO_VARCHAR(ADD_SECONDS(TO_TIMESTAMP('2014/01/01 00:00:00', 'YYYY/MM/DD HH24:MI:SS'), FLOOR(SECONDS_BETWEEN(TO_TIMESTAMP('2014/01/01 00:00:00', 
+            'YYYY/MM/DD HH24:MI:SS'), S.DUMP_TIME) / SUBSTR(BI.TIME_AGGREGATE_BY, 3)) * SUBSTR(BI.TIME_AGGREGATE_BY, 3)), 'YYYY/MM/DD HH24:MI:SS')
+          ELSE TO_VARCHAR(S.DUMP_TIME, BI.TIME_AGGREGATE_BY)
+        END
+      ELSE 'any' 
+    END,
+    CASE WHEN BI.AGGREGATE_BY = 'NONE' OR INSTR(BI.AGGREGATE_BY, 'TYPE')       != 0 THEN S.SHORT_DUMP_TYPE ELSE MAP(BI.SHORT_DUMP_TYPE, '%', 'any', BI.SHORT_DUMP_TYPE) END,
+    CASE WHEN BI.AGGREGATE_BY = 'NONE' OR INSTR(BI.AGGREGATE_BY, 'MANDT')      != 0 THEN S.MANDT           ELSE MAP(BI.MANDT,           '%', 'any', BI.MANDT)           END,
+    CASE WHEN BI.AGGREGATE_BY = 'NONE' OR INSTR(BI.AGGREGATE_BY, 'HOST')       != 0 THEN S.CLIENT_HOST     ELSE MAP(BI.CLIENT_HOST,     '%', 'any', BI.CLIENT_HOST)     END,
+    CASE WHEN BI.AGGREGATE_BY = 'NONE' OR INSTR(BI.AGGREGATE_BY, 'APP_USER')   != 0 THEN S.APP_USER        ELSE MAP(BI.APP_USER,        '%', 'any', BI.APP_USER)        END,
+    CASE WHEN BI.AGGREGATE_BY = 'NONE' OR INSTR(BI.AGGREGATE_BY, 'APP_SOURCE') != 0 THEN S.APP_SOURCE      ELSE MAP(BI.APP_SOURCE,      '%', 'any', BI.APP_SOURCE)      END,
+    BI.ORDER_BY
+)
+ORDER BY
+  MAP(ORDER_BY, 'TIME', START_TIME) DESC,
+  MAP(ORDER_BY, 'COUNT', DUMPS) DESC,
+  MAP(ORDER_BY, 'TYPE', SHORT_DUMP_TYPE, 'MANDT', MANDT, 'HOST', CLIENT_HOST, 'APP_USER', APP_USER, 'APP_SOURCE', APP_SOURCE)
